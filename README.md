@@ -7,6 +7,6 @@ This repository contains the official implementation of PLA-Net, submitted for r
 ## Installation
 
 ## Models
-We provide trained models available for download in the following [link]().
+We provide trained models available for download in the following [link](http://157.253.243.19/PLA-Net/).
 
 ## Usage
