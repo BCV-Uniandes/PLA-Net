@@ -5,8 +5,21 @@ Paola Ruiz-Puentes, Laura Rueda-Gensini, Natalia Valderrama, Isabela Hernández,
 This repository contains the official implementation of PLA-Net, submitted for revision to *Scientific Reports*. 
 
 ## Installation
+The following steps are required in order to run PLA-Net:
+
+1.
+export PATH=/usr/local/cuda-11.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-11.0/lib64:$LD_LIBRARY_PATH
+
+2.
+conda create --name PLA-Net 
+conda activate PLA-Net 
+
+3.
+Run env.sh
 
 ## Models
 We provide trained models available for download in the following [link](http://157.253.243.19/PLA-Net/).
 
 ## Usage
+To evaluate each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please run the corresponding bash file.
