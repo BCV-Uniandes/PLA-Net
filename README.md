@@ -8,12 +8,12 @@ This repository contains the official implementation of PLA-Net, submitted for r
 The following steps are required in order to run PLA-Net:
 
 1.
-export PATH=/usr/local/cuda-11.0/bin:$PATH \n
-export LD_LIBRARY_PATH=/usr/local/cuda-11.0/lib64:$LD_LIBRARY_PATH \n
+export PATH=/usr/local/cuda-11.0/bin:$PATH **Enter**
+export LD_LIBRARY_PATH=/usr/local/cuda-11.0/lib64:$LD_LIBRARY_PATH **Enter**
 
 2.
-conda create --name PLA-Net 
-conda activate PLA-Net 
+conda create --name PLA-Net **Enter**
+conda activate PLA-Net **Enter**
 
 3.
 Run env.sh
