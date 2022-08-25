@@ -22,4 +22,6 @@ Run env.sh
 We provide trained models available for download in the following [link](http://157.253.243.19/PLA-Net/).
 
 ## Usage
-To evaluate each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please run the corresponding bash file.
+To train each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please refer to planet.sh file and run the desired models.
+
+To evaluate each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please run the corresponding bash file in the inference folder.
