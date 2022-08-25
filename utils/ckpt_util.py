@@ -6,27 +6,21 @@ import logging
 import numpy as np
 
 
-def save_ckpt(model, optimizer, loss_train, loss_val, nap_train, nap_val, epoch, save_path, name_pre, name_post='best'):
+def save_ckpt(model, optimizer,
+              train_epoch_loss,
+              val_epoch_loss,
+              train_epoch_nap,
+              val_epoch_nap,
+              epoch, save_path, name_pre, name_post='best'):
     model_cpu = {k: v.cpu() for k, v in model.state_dict().items()}
-    if optimizer is not None:
-       state = {
+    state = {
             'epoch': epoch,
             'model_state_dict': model_cpu,
             'optimizer_state_dict': optimizer.state_dict(),
-            'loss_train': loss_train,
-            'loss_val': loss_val,
-            'nap_train': nap_train,
-            'nap_val': nap_val
-            }
-    else:
-       state = {
-            'epoch': epoch,
-            'model_state_dict': model_cpu,
-            'optimizer_state_dict': None,
-            'loss_train': loss_train,
-            'loss_val': loss_val,
-            'nap_train': nap_train,
-            'nap_val': nap_val
+            'train_loss': train_epoch_loss,
+            'val_loss': val_epoch_loss,
+            'train_map': train_epoch_nap,
+            'val_map': val_epoch_nap,
             }
 
     if not os.path.exists(save_path):

@@ -39,12 +39,12 @@ def extract_node_feature(data, reduce='add'):
         raise Exception('Unknown Aggregation Type')
     return data
 
-# random partition graph %%%%
+# random partition graph
 def random_partition_graph(num_nodes, cluster_number=10):
     parts = np.random.randint(cluster_number, size=num_nodes)
     return parts
 
-#%%%%%%
+
 def generate_sub_graphs(adj, parts, cluster_number=10, batch_size=1):
     # convert sparse tensor to scipy csr
     adj = adj.to_scipy(layout='csr')
@@ -59,7 +59,7 @@ def generate_sub_graphs(adj, parts, cluster_number=10, batch_size=1):
         sg_edges[cluster] = tg.utils.from_scipy_sparse_matrix(adj[sg_nodes[cluster], :][:, sg_nodes[cluster]])[0]
 
     return sg_nodes, sg_edges
-#%%%%%%
+
 def random_rotate(points):
     theta = np.random.uniform(0, np.pi * 2)
     rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
@@ -67,12 +67,12 @@ def random_rotate(points):
     points[:, 0:2] = torch.matmul(points[:, [0, 1]].transpose(1, 3), rotation_matrix).transpose(1, 3)
     return points
 
-#%%%%%%
+
 def random_translate(points, mean=0, std=0.02):
     points += torch.randn(points.shape)*std + mean
     return points
 
-#%%%%%%
+
 def random_points_augmentation(points, rotate=False, translate=False, **kwargs):
     if rotate:
         points = random_rotate(points)
@@ -81,7 +81,7 @@ def random_points_augmentation(points, rotate=False, translate=False, **kwargs):
 
     return points
 
-#%%%%%%
+
 def scale_translate_pointcloud(pointcloud, shift=[-0.2, 0.2], scale=[2. / 3., 3. /2.]):
     """
     for scaling and shifting the point cloud
@@ -94,7 +94,7 @@ def scale_translate_pointcloud(pointcloud, shift=[-0.2, 0.2], scale=[2. / 3., 3.
     translated_pointcloud = torch.mul(pointcloud, scale) + shift
     return translated_pointcloud
 
-#%%%%%%
+
 class PartNet(InMemoryDataset):
     r"""The PartNet dataset from
     the `"PartNet: A Large-scale Benchmark for Fine-grained and Hierarchical Part-level 3D Object Understanding"
@@ -233,7 +233,7 @@ class PartNet(InMemoryDataset):
                     data_list.append(data)
         return self.collate(data_list)
 
-#%%%%%%
+
 class PartData(Data):
     def __init__(self,
                  y=None,

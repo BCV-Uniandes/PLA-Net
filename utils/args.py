@@ -11,44 +11,48 @@ import glob
 class ArgsInit(object):
     def __init__(self):
         parser = argparse.ArgumentParser(description="DeeperGCN")
-        # dataset
+        # ===================== DATASET =====================
         parser.add_argument(
-            "--seed", type=int, default=1, help="Seed for numpy and torch"
+            "--seed", type=int,
+            default=1, help="Seed for numpy and torch"
         )
         parser.add_argument(
-            "--dataset",
-            type=str,
-            default="ogbg-molhiv",
-            help="dataset name (default: ogbg-molhiv)",
+            "--num_workers", type=int, 
+            default=0, help="number of workers (default: 0)"
         )
         parser.add_argument(
-            "--num_workers", type=int, default=0, help="number of workers (default: 0)"
+            "--batch_size", type=int, 
+            default=5120, help="input batch size for training (default: 5120)",
         )
         parser.add_argument(
-            "--batch_size",
-            type=int,
-            default=5120,
-            help="input batch size for training (default: 5120)",
+            "--feature", type=str,
+            default="full", help="two options: full or simple"
         )
         parser.add_argument(
-            "--feature", type=str, default="full", help="two options: full or simple"
+            "--add_virtual_node",
+            action="store_true"
         )
-        parser.add_argument("--add_virtual_node", action="store_true")
-        # training & eval settings
-        parser.add_argument("--use_gpu", action="store_true")
+        
+        # ===================== TRAIN & EVAL =====================
         parser.add_argument(
-            "--device", type=int, default=0, help="which gpu to use if any (default: 0)"
-        )
-        parser.add_argument(
-            "--epochs",
-            type=int,
-            default=20,
-            help="number of epochs to train (default: 300)",
+            "--use_gpu", action="store_true"
         )
         parser.add_argument(
-            "--lr", type=float, default=5e-5, help="learning rate set for optimizer."
+            "--device", type=int,
+            default=0, help="which gpu to use if any (default: 0)"
         )
-        parser.add_argument("--dropout", type=float, default=0.2)
+        parser.add_argument(
+            "--epochs", type=int,
+            default=20, help="number of epochs to train (default: 300)",
+        )
+        parser.add_argument(
+            "--lr", type=float,
+            default=5e-5, help="learning rate set for optimizer (default: 5e-5)"
+        )
+        parser.add_argument(
+            "--dropout", type=float,
+            default=0.2, help="Dropout rate layer (default: 0.2)"
+        )
         # model
         parser.add_argument(
             "--num_layers",
@@ -265,16 +269,7 @@ class ArgsInit(object):
         self.args = parser.parse_args()
 
     def save_exp(self):
-        self.args.save = "/{}/Fold{}".format(self.args.save, str(self.args.cross_val))
-        """
-        self.args.save = '{}-B_{}-C_{}-L_{}-F_{}-DP_{}' \
-                    '-GA_{}-T_{}-LT_{}-P_{}-LP_{}' \
-                    '-MN_{}-LS_{}'.format(self.args.save, self.args.block, self.args.conv,
-                                          self.args.num_layers, self.args.hidden_channels,
-                                          self.args.dropout, self.args.gcn_aggr,
-                                          self.args.t, self.args.learn_t, self.args.p, self.args.learn_p,
-                                          self.args.msg_norm, self.args.learn_msg_scale)"""
-
+        self.args.save = "{}/Fold{}".format(self.args.save, str(self.args.cross_val))
         self.args.save = "log/{}".format(self.args.save)
         self.args.model_save_path = os.path.join(
             self.args.save, self.args.model_save_path

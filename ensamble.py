@@ -1,23 +1,23 @@
-import torch
-from torch_geometric.data import DataLoader
-import torch.optim as optim
-from model import DeeperGCN
-from model_concatenation import SuperDeeperGCN
-from tqdm import tqdm
-from args import ArgsInit
-from utils.ckpt_util import save_ckpt
-import logging
-import time
-import statistics
-from ogb.graphproppred import PygGraphPropPredDataset, Evaluator
-from dataset import load_dataset
-import torch.nn.functional as F
-import metrics_pharma
-import copy
-import numpy as np
-import datetime
 import os
 import csv
+import copy
+import numpy as np
+
+from tqdm import tqdm
+
+import torch
+import torch.optim as optim
+import torch.functional as F
+
+from torch_geometric.data import DataLoader
+
+from utils import metrics_pharma
+from utils.args import ArgsInit
+
+from data.dataset import load_dataset
+from model.model import DeeperGCN
+
+from model.model_concatenation import PLANet
 
 
 @torch.no_grad()
@@ -155,7 +155,7 @@ def main(target):
     )
 
     if args.use_prot:
-        model = SuperDeeperGCN(args).to(device)
+        model = PLANet(args).to(device)
     else:
         model = DeeperGCN(args).to(device)
 
