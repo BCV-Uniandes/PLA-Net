@@ -7,7 +7,7 @@ This repository contains the official implementation of PLA-Net: [Predicting tar
 ## Paper
 
 [Predicting target–ligand interactions with graph convolutional networks for interpretable pharmaceutical discovery](https://www.nature.com/articles/s41598-022-12180-x),<br/>
-Paola Ruiz Puentes<sup>1,2</sup>, Laura Rueda-Gensini<sup>1,2</sup>, [Natalia Valderrama](https://lauradaza.github.io/Laura_Daza/)<sup>1,2</sup>, Isabela Hernández<sup>1,2</sup>, Cristina González<sup>1,2</sup>, [Laura Daza](https://lauradaza.github.io/Laura_Daza/), Carolina Muñoz-Camargo<sup>2</sup>, Juan C. Cruz<sup>2</sup>, [Pablo Arbeláez](https://scholar.google.com.co/citations?user=k0nZO90AAAAJ&hl=en)<sup>1</sup>*<br/>
+Paola Ruiz Puentes<sup>1,2</sup>, Laura Rueda-Gensini<sup>1,2</sup>, [Natalia Valderrama](https://nfvalderrama.github.io)<sup>1,2</sup>, Isabela Hernández<sup>1,2</sup>, Cristina González<sup>1,2</sup>, [Laura Daza](https://lauradaza.github.io/Laura_Daza/)<sup>1,2</sup>, Carolina Muñoz-Camargo<sup>2</sup>, Juan C. Cruz<sup>2</sup>, [Pablo Arbeláez](https://scholar.google.com.co/citations?user=k0nZO90AAAAJ&hl=en)<sup>1</sup><br/>
 Scientific Reports, 2022.<br><br>
 
 <sup>1 </sup> Center  for  Research  and  Formation  in  Artificial  Intelligence .([CINFONIA](https://cinfonia.uniandes.edu.co/)),  Universidad  de  los  Andes,  Bogotá 111711, Colombia. <br/>
