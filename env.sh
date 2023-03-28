@@ -1,21 +1,11 @@
-# conda create a new environment
-# make sure system cuda version is the same with pytorch cuda
-# # follow the instruction of Pyotrch Geometric: https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html
-# export PATH=/usr/local/cuda-11.0/bin:$PATH
-# export LD_LIBRARY_PATH=/usr/local/cuda-11.0/lib64:$LD_LIBRARY_PATH
+conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c conda-forge
 
-# conda create --name metric_learning 
-# activate this enviroment
-# conda activate metric_learning 
-
-conda install pytorch torchvision torchaudio cudatoolkit=11.1 -c pytorch -c nvidia
-
-test if pytorch is installed successfully
+# test if pytorch is installed successfully
 python -c "import torch; print(torch.__version__)"
 nvcc --version # should be same with that of torch_version_cuda (they should be the same)
 python -c "import torch; print(torch.version.cuda)"
 
-pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
+pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.12.0+cu116.html
 
 pip install tqdm
 pip install ogb
