@@ -458,144 +458,134 @@ def main():
     else:
         init_epoch = 1
 
-    # TODO: Revisar si la quitamos
-    if args.init_adv_training:
-        model_name = os.path.join(
-            args.model_load_init_path, "model_ckpt", args.model_load_path
-        )
-        checkpoint = torch.load(model_name, map_location=lambda storage, loc: storage)
-        for i in range(args.num_layers):
-            checkpoint["model_state_dict"][
-                "gcns." + str(i) + ".edge_encoder.bond_embedding_list.0.weight"
-            ] = checkpoint["model_state_dict"][
-                "gcns." + str(i) + ".edge_encoder.bond_embedding_list.0.weight"
-            ].t()
-            checkpoint["model_state_dict"][
-                "gcns." + str(i) + ".edge_encoder.bond_embedding_list.1.weight"
-            ] = checkpoint["model_state_dict"][
-                "gcns." + str(i) + ".edge_encoder.bond_embedding_list.1.weight"
-            ].t()
-            checkpoint["model_state_dict"][
-                "gcns." + str(i) + ".edge_encoder.bond_embedding_list.2.weight"
-            ] = checkpoint["model_state_dict"][
-                "gcns." + str(i) + ".edge_encoder.bond_embedding_list.2.weight"
-            ].t()
-        model.load_state_dict(checkpoint["model_state_dict"])
-        init_epoch = 1
-        print("Model loaded")
+        if args.init_adv_training:
+            model_name = os.path.join(
+                args.model_load_init_path, "model_ckpt", args.model_load_path
+            )
+            checkpoint = torch.load(model_name, map_location=lambda storage, loc: storage)
+            for i in range(args.num_layers):
+                checkpoint["model_state_dict"][
+                    "gcns." + str(i) + ".edge_encoder.bond_embedding_list.0.weight"
+                ] = checkpoint["model_state_dict"][
+                    "gcns." + str(i) + ".edge_encoder.bond_embedding_list.0.weight"
+                ].t()
+                checkpoint["model_state_dict"][
+                    "gcns." + str(i) + ".edge_encoder.bond_embedding_list.1.weight"
+                ] = checkpoint["model_state_dict"][
+                    "gcns." + str(i) + ".edge_encoder.bond_embedding_list.1.weight"
+                ].t()
+                checkpoint["model_state_dict"][
+                    "gcns." + str(i) + ".edge_encoder.bond_embedding_list.2.weight"
+                ] = checkpoint["model_state_dict"][
+                    "gcns." + str(i) + ".edge_encoder.bond_embedding_list.2.weight"
+                ].t()
+            model.load_state_dict(checkpoint["model_state_dict"])
+            init_epoch = 1
+            print("Model loaded")
 
-    # Load pre-trained LM module
-    elif args.LMPM:
+        # Load pre-trained LM module
+        elif args.LMPM:
 
-        best_molecule_path = args.model_load_init_path
-        model_path = (
-            "BINARY_{}/Fold{}/model_ckpt/BS_2560-NF_full_valid_best.pth".format(
+            best_molecule_path = args.model_load_init_path
+            model_path = (
+                "BINARY_{}/Fold{}/model_ckpt/BS_2560-NF_full_valid_best.pth".format(
+                    args.target, args.cross_val
+                )
+            )
+            full_model_path = os.path.join(best_molecule_path, model_path)
+            pre_model = torch.load(full_model_path)
+            model_weights = {}
+            for k, v in pre_model["model_state_dict"].items():
+                if args.use_prot:
+                    if v.shape == model.molecule_gcn.state_dict()[k].shape:
+                        model_weights[k] = v
+                    else:
+                        model_weights[k] = torch.transpose(v, 0, 1)
+                else:
+                    if v.shape == model.state_dict()[k].shape:
+                        model_weights[k] = v
+                    else:
+                        model_weights[k] = torch.transpose(v, 0, 1)
+            model.molecule_gcn.load_state_dict(model_weights)
+            dict_clasificacion = {
+                "weight": pre_model["model_state_dict"]["graph_pred_linear.weight"],
+                "bias": pre_model["model_state_dict"]["graph_pred_linear.bias"],
+            }
+            model.classification.load_state_dict(dict_clasificacion, strict=False)
+            all_params = []
+            variable_params = []
+            for name, param in model.named_parameters():
+                all_params.append(name)
+                if param.requires_grad:
+                    variable_params.append(name)
+
+            if len(variable_params) < len(all_params):
+                logging.info(
+                    "Molecule model loaded and freezed. Experimenting with target {} model only.".format(
+                        args.target
+                    )
+                )
+        # Load pre-traines LM+Advs and PM models
+        elif args.PLANET:
+            best_molecule_path = args.model_load_init_path
+            model_path = "BINARY_{}/Fold{}/model_ckpt/Checkpoint__Best.pth".format(
                 args.target, args.cross_val
             )
-        )
-        full_model_path = os.path.join(best_molecule_path, model_path)
-        pre_model = torch.load(full_model_path)
-        model_weights = {}
-        for k, v in pre_model["model_state_dict"].items():
-            if args.use_prot:
-                if v.shape == model.molecule_gcn.state_dict()[k].shape:
-                    model_weights[k] = v
-                else:
-                    model_weights[k] = torch.transpose(v, 0, 1)
-            else:
-                if v.shape == model.state_dict()[k].shape:
-                    model_weights[k] = v
-                else:
-                    model_weights[k] = torch.transpose(v, 0, 1)
-        model.molecule_gcn.load_state_dict(model_weights)
-        dict_clasificacion = {
-            "weight": pre_model["model_state_dict"]["graph_pred_linear.weight"],
-            "bias": pre_model["model_state_dict"]["graph_pred_linear.bias"],
-        }
-        model.classification.load_state_dict(dict_clasificacion, strict=False)
-        all_params = []
-        variable_params = []
-        for name, param in model.named_parameters():
-            all_params.append(name)
-            if param.requires_grad:
-                variable_params.append(name)
+            full_model_path = os.path.join(best_molecule_path, model_path)
 
-        if len(variable_params) < len(all_params):
-            logging.info(
-                "Molecule model loaded and freezed. Experimenting with target {} model only.".format(
-                    args.target
-                )
+            pre_model = torch.load(full_model_path)
+            model_weights = {}
+            for k, v in pre_model["model_state_dict"].items():
+                if args.use_prot:
+                    if v.shape == model.molecule_gcn.state_dict()[k].shape:
+                        model_weights[k] = v
+                    else:
+                        model_weights[k] = torch.transpose(v, 0, 1)
+                else:
+                    if v.shape == model.state_dict()[k].shape:
+                        model_weights[k] = v
+                    else:
+                        model_weights[k] = torch.transpose(v, 0, 1)
+            model.molecule_gcn.load_state_dict(model_weights)
+            dict_clasificacion = {
+                "weight": pre_model["model_state_dict"]["graph_pred_linear.weight"],
+                "bias": pre_model["model_state_dict"]["graph_pred_linear.bias"],
+            }
+            model.classification.load_state_dict(dict_clasificacion, strict=False)
+            # Freeze LM
+            for param in model.molecule_gcn.parameters():
+                param.requires_grad = False
+
+            # PARA ENTRENAR SOLO LA CAPA LINEAL
+            best_molecule_path = args.model_load_prot_init_path
+            model_path = "BINARY_{}/Fold{}/model_ckpt/Checkpoint_valid_best.pth".format(
+                args.target, args.cross_val
             )
-    # Load pre-traines LM+Advs and PM models
-    elif args.PLANET:
-        best_molecule_path = args.model_load_init_path
-        model_path = "BINARY_{}/Fold{}/model_ckpt/Checkpoint__Best.pth".format(
-            args.target, args.cross_val
-        )
-        full_model_path = os.path.join(best_molecule_path, model_path)
+            full_model_path = os.path.join(best_molecule_path, model_path)
 
-        pre_model = torch.load(full_model_path)
-        model_weights = {}
-        for k, v in pre_model["model_state_dict"].items():
-            if args.use_prot:
-                if v.shape == model.molecule_gcn.state_dict()[k].shape:
-                    model_weights[k] = v
-                else:
-                    model_weights[k] = torch.transpose(v, 0, 1)
-            else:
-                if v.shape == model.state_dict()[k].shape:
-                    model_weights[k] = v
-                else:
-                    model_weights[k] = torch.transpose(v, 0, 1)
-        model.molecule_gcn.load_state_dict(model_weights)
-        dict_clasificacion = {
-            "weight": pre_model["model_state_dict"]["graph_pred_linear.weight"],
-            "bias": pre_model["model_state_dict"]["graph_pred_linear.bias"],
-        }
-        model.classification.load_state_dict(dict_clasificacion, strict=False)
-        # Freeze LM
-        for param in model.molecule_gcn.parameters():
-            param.requires_grad = False
+            pre_model_prot = torch.load(full_model_path, map_location=device)
+            model_weights_prot = {k.replace('target_gcn.', ''):v for k,v in pre_model_prot['model_state_dict'].items() if k.startswith('target_gcn')}
 
-        # PARA ENTRENAR SOLO LA CAPA LINEAL
-        best_molecule_path = args.model_load_prot_init_path
-        model_path = "BINARY_{}/Fold{}/model_ckpt/Checkpoint_valid_best.pth".format(
-            args.target, args.cross_val
-        )
-        full_model_path = os.path.join(best_molecule_path, model_path)
+            model.target_gcn.load_state_dict(model_weights_prot)
 
-        pre_model_prot = torch.load(full_model_path, map_location=device)
-        model_weights_prot = {k.replace('target_gcn.', ''):v for k,v in pre_model_prot['model_state_dict'].items() if k.startswith('target_gcn')}
+            logging.info("Protein Loaded")
+            # Freeze PM
+            for param in model.target_gcn.parameters():
+                param.requires_grad = False
 
-        model.target_gcn.load_state_dict(model_weights_prot)
+            all_params = []
+            variable_params = []
+            for name, param in model.named_parameters():
+                all_params.append(name)
+                if param.requires_grad:
+                    variable_params.append(name)
 
-        logging.info("Protein Loaded")
-        # Freeze PM
-        for param in model.target_gcn.parameters():
-            param.requires_grad = False
-
-        all_params = []
-        variable_params = []
-        for name, param in model.named_parameters():
-            all_params.append(name)
-            if param.requires_grad:
-                variable_params.append(name)
-
-        if len(variable_params) < len(all_params):
-            logging.info(
-                "Molecule and protein model loaded and freezed. Experimenting with target {} model only.".format(
-                    args.target
+            if len(variable_params) < len(all_params):
+                logging.info(
+                    "Molecule and protein model loaded and freezed. Experimenting with target {} model only.".format(
+                        args.target
+                    )
                 )
-            )
-    # TODO: Revisar si se puede borrar
-    # ESTO ES PARA ENTRENAR SOLO LA CAPA LINEAL
-    #      best_molecule_path = args.model_load_prot_init_path
-    #      model_path = 'BINARY_{}/Fold{}/model_ckpt/Checkpoint_valid_best.pth'.format(args.target, args.cross_val)
-    #      full_model_path = os.path.join(best_molecule_path, model_path)
-    #      pre_model = torch.load(full_model_path)
-    #      model_weights = {k.replace('target_gcn.', ''):v for k,v in pre_model['model_state_dict'].items() if k.startswith('target_gcn')}
-    #      model.target_gcn.load_state_dict(model_weights)
-    #      logging.info('Protein Loaded')
 
     loss_track = 0
     past_loss = 0
