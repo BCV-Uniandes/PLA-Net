@@ -22,7 +22,7 @@ from utils.data_util import one_hot_vector_sm, one_hot_vector_am, get_atom_featu
 
 
 def load_dataset(
-    cross_val, binary_task, target, args, use_prot=False, advs=False, test=False
+    cross_val, binary_task, target, args, use_prot=False, advs=False, test=False, inference=False
 ):
     """
     Load data and return data in dataframes format for each split and the loader of each split.
@@ -54,7 +54,11 @@ def load_dataset(
     data_test = pd.read_csv(
         path + f"Smiles{add_val}_Test.csv", names=["Smiles", "Target", "Label"]
     )
-    if not test:
+
+    data_inference = pd.read_csv(
+        path + f"Inference.csv", names=["Smiles", "Target", "Label"]
+    )
+    if not test and not inference:
         # Verify cross validation partition is defined
         assert cross_val in [1, 2, 3, 4], "{} data partition is not defined".format(
             cross_val
@@ -108,7 +112,7 @@ def load_dataset(
         valid = get_dataset(data_val, use_prot, data_target, args)
         test = get_dataset(data_test, use_prot, data_target, args)
         
-    else:
+    elif test and not inference:
         # Read test data file
         data_target = None
         if binary_task:
@@ -132,6 +136,32 @@ def load_dataset(
         valid = []
         data_train = []
         data_val = []
+
+    elif inference:
+        # Read inference data file
+        data_target = None
+        if binary_task:
+            data_inference = data_inference[data_inference.Target == target]
+            if use_prot:
+                data_target = pd.read_csv(
+                    path + "Targets_Fasta.csv", names=["Fasta", "Target", "Label"]
+                )
+                data_target = data_target[data_target.Target == target]
+
+        test = get_dataset(
+                        data_inference,
+                        target=data_target,
+                        use_prot=use_prot,
+                        args=args,
+                        advs=advs,
+                        saliency=args.saliency,
+                    )
+        # No need for these sets in test mode
+        train = []
+        valid = []
+        data_train = []
+        data_val = []
+
     print("Done.")
     return train, valid, test, data_train, data_val, data_test
 

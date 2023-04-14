@@ -39,10 +39,10 @@ def eval(model, device, loader, num_classes, args):
     test_model_path = os.path.join(
         args.save,'BINARY_'+args.target
     )
-    test_model_path1 = test_model_path + "/Fold1/model_ckpt/Checkpoint_valid_best.pth"
-    test_model_path2 = test_model_path + "/Fold2/model_ckpt/Checkpoint_valid_best.pth"
-    test_model_path3 = test_model_path + "/Fold3/model_ckpt/Checkpoint_valid_best.pth"
-    test_model_path4 = test_model_path + "/Fold4/model_ckpt/Checkpoint_valid_best.pth"
+    test_model_path1 = test_model_path + "/Fold1/model_ckpt/Best_Model.pth"
+    test_model_path2 = test_model_path + "/Fold2/model_ckpt/Best_Model.pth"
+    test_model_path3 = test_model_path + "/Fold3/model_ckpt/Best_Model.pth"
+    test_model_path4 = test_model_path + "/Fold4/model_ckpt/Best_Model.pth"
     # LOAD MODELS
     print("------- Loading weights----------")
     prop_predictor1.load_state_dict(torch.load(test_model_path1)["model_state_dict"])
