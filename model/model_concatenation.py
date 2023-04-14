@@ -17,7 +17,7 @@ class PLANet(torch.nn.Module):
         # Args
         self.args = args
         # Molecule and protein networks
-        self.molecule_gcn = DeeperGCN(args)
+        self.molecule_gcn = DeeperGCN(args, saliency=saliency)
         self.target_gcn = DeeperGCN(args, is_prot=True)
 
         # Individual modules' final embbeding size

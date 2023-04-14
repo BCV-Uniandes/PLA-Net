@@ -22,7 +22,7 @@ from utils.data_util import one_hot_vector_sm, one_hot_vector_am, get_atom_featu
 
 
 def load_dataset(
-    cross_val, binary_task, target, args, use_prot=False, advs=False, test=False, inference=False
+    cross_val, binary_task, target, args, use_prot=False, advs=False, test=False, inference=False, saliency=False
 ):
     """
     Load data and return data in dataframes format for each split and the loader of each split.
@@ -129,7 +129,7 @@ def load_dataset(
                         use_prot=use_prot,
                         args=args,
                         advs=advs,
-                        saliency=args.saliency,
+                        saliency=saliency,
                     )
         # No need for these sets in test mode
         train = []

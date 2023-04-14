@@ -265,6 +265,12 @@ class ArgsInit(object):
             default=False,
             help="Allow backpropagation through atom features.",
         )
+        parser.add_argument(
+            "--inference_path",
+            type=str,
+            help='path model for inference',
+            default='/media/SSD5/pruiz/2022-2023/PLA-Net/log/ISBI/PLA-Net/'
+        )
 
         self.args = parser.parse_args()
 
