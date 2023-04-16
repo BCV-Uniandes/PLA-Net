@@ -36,7 +36,7 @@
   "binary": true,
   "balanced_loader": false,
   "target": "ada",
-  "nclasses": 102,
+  "nclasses": 2,
   "num_features": 2,
   "LMPM": false,
   "PLANET": false,
