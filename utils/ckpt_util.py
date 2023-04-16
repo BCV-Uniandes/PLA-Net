@@ -175,7 +175,7 @@ def load_models(model, device):
     print("------Copying model 4---------")
     prop_predictor4 = copy.deepcopy(model)
 
-    test_model_path = "/media/SSD0/cigonzalez/drugs-discovery/BINARY_" + target
+    test_model_path = "./PLA-Net/pretrained-models/BINARY_ada"
 
     test_model_path1 = test_model_path + "/Fold1/Best_Model.pth"
     test_model_path2 = test_model_path + "/Fold2/Best_Model.pth"
