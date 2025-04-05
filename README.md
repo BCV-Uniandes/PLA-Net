@@ -27,12 +27,14 @@ $ bash env.sh
 ```
 
 ## Models
-We provide trained models available for download in the following [link](https://drive.google.com/drive/folders/1Kr4SXCXbWIUu_n_qmUHvr-YiD8YclMoQ?usp=sharing).
+We provide trained models available for download in the following [link](https://drive.google.com/drive/folders/1Kr4SXCXbWIUu_n_qmUHvr-YiD8YclMoQ?usp=sharing). 
 
 ## Usage
 To train each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please refer to planet.sh file and run the desired models.
 
 To evaluate each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please run the corresponding bash file in the inference folder.
+
+For docker installation you can use the setup in [here](https://huggingface.co/juliocesar-io/PLA-Net).
 
 ## Citation
 
