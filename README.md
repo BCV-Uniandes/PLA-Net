@@ -27,7 +27,7 @@ $ bash env.sh
 ```
 
 ## Models
-We provide trained models available for download in the following [link](http://157.253.243.19/PLA-Net/).
+We provide trained models available for download in the following [link](https://drive.google.com/drive/folders/1Kr4SXCXbWIUu_n_qmUHvr-YiD8YclMoQ?usp=sharing).
 
 ## Usage
 To train each of the components of our method: LM, LM+Advs, LMPM and PLA-Net please refer to planet.sh file and run the desired models.
